@@ -6,8 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class LoginTest extends BaseTest {
-//    private static LoginPage loginPage;
-//    private static HomePage homePage;
 
     @Test
     public void login(){
