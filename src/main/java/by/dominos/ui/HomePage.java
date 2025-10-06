@@ -1,8 +1,6 @@
 package by.dominos.ui;
 
-import by.dominos.singleton.WebDriver;
-
-import static by.dominos.singleton.WebDriver.driver;
+import by.dominos.singleton.WebDriverSingleton;
 
 public class HomePage {
     private final String URL = "https://dominos.by/";
@@ -10,14 +8,14 @@ public class HomePage {
     private final String BUTTON_USER_ACCOUNT = "//button[contains(text(), 'Войти')]";
 
     public void openSite() {
-        driver.navigate().to(URL);
+        WebDriverSingleton.getDriver().navigate().to(URL);
     }
 
     public void acceptCookies() {
-        WebDriver.clickElement(BUTTON_ACCEPT_COOKIES);
+        WebDriverSingleton.clickElement(BUTTON_ACCEPT_COOKIES);
     }
 
     public void clickUserAccount() {
-        WebDriver.clickElement(BUTTON_USER_ACCOUNT);
+        WebDriverSingleton.clickElement(BUTTON_USER_ACCOUNT);
     }
 }
