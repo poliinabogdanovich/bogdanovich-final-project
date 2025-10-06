@@ -12,7 +12,6 @@ public class WebDriverSingleton {
     private static WebDriver driver;
 
     private WebDriverSingleton() {
-        // приватный конструктор для ограничения создания объектов
     }
 
     public static WebDriver getDriver() {
