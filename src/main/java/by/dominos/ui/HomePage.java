@@ -6,7 +6,7 @@ public class HomePage {
     private final String URL = "https://dominos.by/";
     private final String BUTTON_ACCEPT_COOKIES = "//div[@class='CookieButtons']/button[@class='base-tab-button selected']";
     private final String BUTTON_USER_ACCOUNT = "//button[contains(text(), 'Войти')]";
-    private final String BUTTON_MORE = "//label[@for=\"burger\"]//div[@class=\"icon\"]";
+    private final String BUTTON_MORE = "//div[@class='burger-menu']//div[@class='hamburger']";
     private final String LINK_DELIVERY_CONDITIONS = "//div[@class='side-menu']//a[@href='https://dominos.by/ru/minsk/delivery_conditions/']";
     private final String BUTTON_TO_CART = "//button[@class='red-button']//div[contains(text(), 'В корзину')]";
     private final String LINK_ORDER = "//a[@class='header-cart__order-btn']";
@@ -15,7 +15,7 @@ public class HomePage {
         WebDriverSingleton.getDriver().navigate().to(URL);
     }
 
-    public void acceptCookies() {
+    public void clickAcceptCookies() {
         WebDriverSingleton.clickElement(BUTTON_ACCEPT_COOKIES);
     }
 
