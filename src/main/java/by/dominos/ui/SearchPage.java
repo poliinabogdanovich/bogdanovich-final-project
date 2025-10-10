@@ -3,6 +3,9 @@ package by.dominos.ui;
 import by.dominos.singleton.WebDriverSingleton;
 
 public class SearchPage {
+    public SearchPage() {
+    }
+
     private final String INPUT_STREET = "//input[@class='rect-input__input with-right-icon']";
     private final String INPUT_HOUSE_NUMBER = "//input[@class='rect-input__input']";
     private final String BUTTON_CHECK_DELIVERY_ADDRESS = "//button[@class='pizza-map-check-address__button']";

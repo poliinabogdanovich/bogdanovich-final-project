@@ -3,6 +3,9 @@ package by.dominos.ui;
 import by.dominos.singleton.WebDriverSingleton;
 
 public class HomePage {
+    public HomePage() {
+    }
+
     private final String URL = "https://dominos.by/";
     private final String BUTTON_ACCEPT_COOKIES = "//div[@class='CookieButtons']/button[@class='base-tab-button selected']";
     private final String BUTTON_USER_ACCOUNT = "//button[contains(text(), 'Войти')]";
