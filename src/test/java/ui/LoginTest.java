@@ -27,8 +27,6 @@ public class LoginTest extends BaseTest {
         logger.info("Ввод корректного номера телефона");
         loginPage.sendKeysPhoneNumber(phoneNumber);
         loginPage.clickJoin();
-        logger.info("Ввод корректного кода");
-        loginPage.sendKeysCode("839949");
     }
 
     @Test
@@ -37,6 +35,7 @@ public class LoginTest extends BaseTest {
         String phoneNumber = "";
         logger.info("Ввод пустого значения");
         loginPage.sendKeysPhoneNumber(phoneNumber);
+        loginPage.clickJoin();
     }
 
     @Test
@@ -45,6 +44,7 @@ public class LoginTest extends BaseTest {
         String phoneNumber = "12345";
         logger.info("Ввод некорректного номера телефона");
         loginPage.sendKeysPhoneNumber(phoneNumber);
+        loginPage.clickJoin();
 
         logger.info("Ошибка некорректного ввода номера телефона");
         Assertions.assertEquals("Введите корректный номер телефона.", loginPage.getTextInvalidPhoneNumber());
@@ -59,6 +59,7 @@ public class LoginTest extends BaseTest {
         loginPage.clickJoin();
         logger.info("Ввод пустого кода");
         loginPage.sendKeysCode("");
+        loginPage.clickJoin();
     }
 
     @Test
@@ -69,13 +70,9 @@ public class LoginTest extends BaseTest {
         loginPage.clickJoin();
         logger.info("Ввод некорректного кода");
         loginPage.sendKeysCode("ghhfjd");
+        loginPage.clickJoin();
 
         logger.info("Ошибка некорректного ввода кода");
         Assertions.assertEquals("Неверный код верификации", loginPage.getTextInvalidCode());
-    }
-
-    @AfterEach
-    public void loginToSite() {
-        loginPage.clickJoin();
     }
 }
