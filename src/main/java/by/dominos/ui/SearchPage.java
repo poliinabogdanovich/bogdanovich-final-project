@@ -5,11 +5,14 @@ import by.dominos.singleton.WebDriverSingleton;
 public class SearchPage {
     public SearchPage() {}
 
-    private final String INPUT_STREET = "//input[@class='rect-input__input with-right-icon']";
-    private final String INPUT_HOUSE_NUMBER = "//input[@class='rect-input__input']";
+    // поля: первый label = улица, второй label = номер дома
+    private final String INPUT_STREET = "(//label[@class='rect-input']//input)[1]";
+    private final String INPUT_HOUSE_NUMBER = "(//label[@class='rect-input']//input)[2]";
     private final String BUTTON_CHECK_DELIVERY_ADDRESS = "//button[@class='pizza-map-check-address__button']";
-    private final String MESSAGE_ERROR_EMPTY_STREET = "//span[@class='rect-input__error']";
-    private final String MESSAGE_ERROR_EMPTY_HOUSE_NUMBER = "//span[@class='rect-input__error']";
+
+    // ошибки: первый span = ошибка улицы, второй = ошибка номера дома
+    private final String MESSAGE_ERROR_EMPTY_STREET = "(//label[@class='rect-input']//span[@class='rect-input__error'])[1]";
+    private final String MESSAGE_ERROR_EMPTY_HOUSE_NUMBER = "(//label[@class='rect-input']//span[@class='rect-input__error'])[2]";
     private final String MESSAGE_ERROR_NOT_DELIVERY_ZONE = "//p[@class='check-address-modal__text']";
 
     public void sendKeysStreet(String street) {
