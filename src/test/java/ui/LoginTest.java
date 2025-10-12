@@ -4,7 +4,10 @@ import by.dominos.ui.HomePage;
 import by.dominos.ui.LoginPage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class LoginTest extends BaseTest {
     HomePage homePage = new HomePage();
