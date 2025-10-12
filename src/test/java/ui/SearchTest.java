@@ -3,6 +3,7 @@ package ui;
 import by.dominos.ui.DeliveryPage;
 import by.dominos.ui.HomePage;
 import by.dominos.ui.SearchPage;
+import by.dominos.singleton.WebDriverSingleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.*;
@@ -15,9 +16,17 @@ public class SearchTest extends BaseTest {
 
     @BeforeEach
     public void openSearchForm() {
-        homePage.clickMore();
-        homePage.clickDeliveryConditions();
+        homePage.openSite();
 
+        try {
+            homePage.clickAcceptCookies();
+        } catch (Exception ignored) {}
+
+        if (WebDriverSingleton.findElements("//div[@class='header__burger-menu']").size() > 0) {
+            homePage.clickMore();
+        }
+
+        homePage.clickDeliveryConditions();
         deliveryPage.clickCheckDeliveryAddress();
     }
 
@@ -28,6 +37,7 @@ public class SearchTest extends BaseTest {
         searchPage.sendKeysStreet("Платонова");
         logger.info("Ввод корректного номера дома");
         searchPage.sendKeysHouseNumber("23");
+        searchPage.clickDeliveryAddress();
     }
 
     @Test
@@ -37,6 +47,7 @@ public class SearchTest extends BaseTest {
         searchPage.sendKeysStreet("");
         logger.info("Ввод номера дома");
         searchPage.sendKeysHouseNumber("23");
+        searchPage.clickDeliveryAddress();
 
         logger.info("Ошибка обязательности поля Улица");
         Assertions.assertEquals("Это поле обязательно.", searchPage.getTextEmptyStreet());
@@ -49,6 +60,7 @@ public class SearchTest extends BaseTest {
         searchPage.sendKeysStreet("Платонова");
         logger.info("Ввод пустого номера дома");
         searchPage.sendKeysHouseNumber("");
+        searchPage.clickDeliveryAddress();
 
         logger.info("Ошибка обязательности поля Номер дома");
         Assertions.assertEquals("Это поле обязательно.", searchPage.getTextEmptyHouseNumber());
@@ -61,6 +73,7 @@ public class SearchTest extends BaseTest {
         searchPage.sendKeysStreet("12345");
         logger.info("Ввод значения в поле Номер дома");
         searchPage.sendKeysHouseNumber("23");
+        searchPage.clickDeliveryAddress();
 
         logger.info("Ошибка некорректного ввода улицы");
         Assertions.assertEquals("Ваш адрес не входит в зону доставки :(", searchPage.getTextNotDeliveryZone());
@@ -73,13 +86,9 @@ public class SearchTest extends BaseTest {
         searchPage.sendKeysStreet("Платонова");
         logger.info("Ввод некорректного номера дома");
         searchPage.sendKeysHouseNumber("fghj");
+        searchPage.clickDeliveryAddress();
 
         logger.info("Ошибка некорректного ввода номера дома");
         Assertions.assertEquals("Ваш адрес не входит в зону доставки :(", searchPage.getTextNotDeliveryZone());
-    }
-
-    @AfterEach
-    public void searchAddress() {
-        searchPage.clickCheckDeliveryAddress();
     }
 }
