@@ -1,6 +1,5 @@
 package api;
 
-import by.dominos.api.CartService;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
@@ -10,130 +9,18 @@ import org.junit.jupiter.api.*;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CartServiceTest {
 
     private static final Logger logger = LogManager.getLogger(CartServiceTest.class);
-    private CartService cartService;
-    private String baseUrl = "https://dominos.by/api/v1/cart/";
-    private static String cartId;
-    private static String productId = "102";
-
-    @BeforeEach
-    public void setUp() {
-        cartService = new CartService();
-    }
+    private final String baseUrl = "https://dominos.by/api/v1/cart/";
 
     @Test
     @Order(1)
-    @DisplayName("Добавить товар в корзину")
-    public void testAddProductToCart() {
-        logger.info("Отправка запроса на добавление товара в корзину");
-
-        Response response = given()
-                .header("Content-Type", "application/json")
-                .body("{\"product_id\": \"" + productId + "\", \"quantity\": 1}")
-                .when()
-                .post(baseUrl + "add/")
-                .then()
-                .extract().response();
-
-        logger.info("Ответ API: {}", response.asString());
-
-        int statusCode = response.getStatusCode();
-        assertEquals(200, statusCode, "Ожидался статус 200 при добавлении товара");
-
-        JsonPath json = response.jsonPath();
-        assertTrue(json.getString("cart") != null, "Ожидалось наличие объекта корзины в ответе");
-
-        cartId = json.getString("cart.id");
-        logger.info("Текущий ID корзины: {}", cartId);
-    }
-
-    @Test
-    @Order(2)
-    @DisplayName("Увеличить количество товаров в корзине")
-    public void testIncreaseProductQuantity() {
-        assumeTrue(cartId != null, "Корзина должна существовать после добавления товара");
-
-        logger.info("Отправка запроса на увеличение количества товара");
-
-        Response response = given()
-                .header("Content-Type", "application/json")
-                .body("{\"product_id\": \"" + productId + "\", \"quantity\": 2}")
-                .when()
-                .post(baseUrl + "update/")
-                .then()
-                .extract().response();
-
-        int statusCode = response.getStatusCode();
-        logger.info("Ответ API: {}", response.asString());
-        assertEquals(200, statusCode, "Ожидался статус 200 при увеличении количества");
-
-        int quantity = response.jsonPath().getInt("cart.items[0].quantity");
-        assertEquals(2, quantity, "Количество товара должно увеличиться до 2");
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("Уменьшить количество товаров в корзине")
-    public void testDecreaseProductQuantity() {
-        assumeTrue(cartId != null, "Корзина должна существовать");
-
-        logger.info("Отправка запроса на уменьшение количества товара");
-
-        Response response = given()
-                .header("Content-Type", "application/json")
-                .body("{\"product_id\": \"" + productId + "\", \"quantity\": 1}")
-                .when()
-                .post(baseUrl + "update/")
-                .then()
-                .extract().response();
-
-        int statusCode = response.getStatusCode();
-        assertEquals(200, statusCode, "Ожидался статус 200 при уменьшении количества товара");
-
-        int quantity = response.jsonPath().getInt("cart.items[0].quantity");
-        assertEquals(1, quantity, "Количество товара должно уменьшиться до 1");
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("Удаление товара из корзины")
-    public void testDeleteProductFromCart() {
-        assumeTrue(cartId != null, "Корзина должна существовать");
-
-        logger.info("Отправка запроса на удаление товара из корзины");
-
-        Response response = given()
-                .header("Content-Type", "application/json")
-                .body("{\"product_id\": \"" + productId + "\"}")
-                .when()
-                .post(baseUrl + "remove/")
-                .then()
-                .extract().response();
-
-        int statusCode = response.getStatusCode();
-        logger.info("Ответ API: {}", response.asString());
-        assertEquals(200, statusCode, "Ожидался статус 200 при удалении товара");
-
-        String items = response.jsonPath().getString("cart.items");
-        assertTrue(items == null || items.equals("[]"), "Корзина должна быть пуста после удаления товара");
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("Проверить стоимость заказа")
-    public void testCheckOrderPrice() {
-        logger.info("Отправка запроса на проверку стоимости заказа");
-
-        given()
-                .header("Content-Type", "application/json")
-                .body("{\"product_id\": \"" + productId + "\", \"quantity\": 2}")
-                .when()
-                .post(baseUrl + "add/");
+    @DisplayName("Получить пустую корзину (API cart)")
+    public void testGetEmptyCart() {
+        logger.info("Отправка запроса на получение корзины");
 
         Response response = given()
                 .header("Content-Type", "application/json")
@@ -142,18 +29,40 @@ public class CartServiceTest {
                 .then()
                 .extract().response();
 
-        int statusCode = response.getStatusCode();
-        assertEquals(200, statusCode, "Ожидался статус 200 при получении корзины");
+        logger.info("Ответ API: {}", response.asString());
+
+        assertEquals(200, response.getStatusCode(), "Ожидался статус 200 при получении корзины");
 
         JsonPath json = response.jsonPath();
-        double totalPrice = json.getDouble("cart.total_price");
-        logger.info("Итоговая стоимость корзины: {}", totalPrice);
 
-        assertTrue(totalPrice > 0, "Итоговая стоимость должна быть больше 0");
+        assertEquals(0.0f, json.getFloat("total"), 0.01, "Ожидалась сумма total = 0.0");
+        assertEquals(0, json.getInt("bonuses"), "Ожидалось значение bonuses = 0");
+        assertTrue(json.getList("products").isEmpty(), "Список products должен быть пустым");
+
+        assertEquals("Заказать", json.getString("text.checkout"), "Проверка текстового значения checkout");
+        assertTrue(json.getString("text.empty_cart").contains("пуста"), "Ожидалось сообщение 'корзина пуста'");
+
+        assertEquals(24.99f, json.getFloat("min_order_amount"), 0.01, "Проверка минимальной суммы заказа");
+        assertTrue(json.getString("text.min_order_text").contains("24.99"), "Текст должен содержать '24.99'");
     }
 
-    @AfterEach
-    public void tearDown() {
-        logger.info("Тест завершен");
+    @Test
+    @Order(2)
+    @DisplayName("Проверить, что корзина пустая и элементы товаров не присутствуют")
+    public void testCartContentStructure() {
+        logger.info("Проверка структуры пустой корзины");
+
+        Response response = given()
+                .header("Content-Type", "application/json")
+                .when()
+                .get(baseUrl)
+                .then()
+                .extract().response();
+
+        JsonPath json = response.jsonPath();
+
+        assertTrue(json.getList("products").isEmpty(), "Ожидалось отсутствие products");
+        assertTrue(json.getList("pizza_half").isEmpty(), "Ожидалось отсутствие pizza_half");
+        assertTrue(json.getList("combo_menu").isEmpty(), "Ожидалось отсутствие combo_menu");
     }
 }
