@@ -52,15 +52,4 @@ public class LoginPage {
             return "";
         }
     }
-
-    public String getTextInvalidCode() {
-        WebDriverWait wait = new WebDriverWait(driver, WAIT_TIMEOUT);
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(MESSAGE_INVALID_CODE)));
-            return WebDriverSingleton.findElement(MESSAGE_INVALID_CODE).getText().trim();
-        } catch (Exception e) {
-            logger.warn("Сообщение об ошибке кода не появилось: " + e.getMessage());
-            return "";
-        }
-    }
 }
