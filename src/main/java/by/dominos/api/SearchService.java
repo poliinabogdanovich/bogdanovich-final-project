@@ -17,6 +17,7 @@ public class SearchService {
         String jsonBody = String.format("{\"id\":\"%s\", \"street_number\":\"%s\"}", id, streetNumber);
 
         response = given()
+                .contentType("application/json")
                 .body(jsonBody)
                 .when()
                 .post(URL);
