@@ -6,7 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SearchServiceTest {
@@ -24,7 +25,7 @@ public class SearchServiceTest {
     public void testValidAddress() {
         logger.info("Отправка корректных данных: существующая улица и номер дома");
 
-        String validStreetId = "206dceeb-cb7f-4723-ac99-bb6b0f8c0aa8"; // пример: Платонова
+        String validStreetId = "206dceeb-cb7f-4723-ac99-bb6b0f8c0aa8";
         String validHouseNumber = "39";
 
         searchService.doRequest(validStreetId, validHouseNumber);
