@@ -76,9 +76,10 @@ public class LoginServiceTest {
 
     @Test
     @Order(4)
-    @DisplayName("Логин с пустым кодом подтверждения")
+    @DisplayName("Логин без recaptcha — должен запустить проверку и запросить код")
     public void testEmptyCode() {
-        logger.info("Отправка запроса с пустым кодом");
+        logger.info("Отправка запроса с пустым recaptcha");
+
         loginService.doRequest("+375293438185", "");
 
         int status = loginService.getStatusCode();
@@ -86,17 +87,18 @@ public class LoginServiceTest {
 
         logger.info("Ответ API: {}", body);
 
-        assertTrue(status == 400 || status == 422,
-                "Ожидался статус ошибки при пустом коде");
-        assertTrue(body.contains("recaptcha") || body.contains("code") || body.contains("Неверный код"),
-                "Ответ должен содержать сообщение об ошибке пустого кода");
+        assertEquals(200, status, "API должно вернуть 200 и запросить подтверждение по SMS");
+
+        assertTrue(body.contains("verification_needed") && body.contains("verification_id"),
+                "Ожидалось, что API вернёт verification_needed и verification_id");
     }
 
     @Test
     @Order(5)
-    @DisplayName("Логин с некорректным кодом подтверждения")
+    @DisplayName("Логин с некорректным recaptcha — API всё равно инициирует верификацию")
     public void testInvalidCode() {
-        logger.info("Отправка запроса с некорректным кодом подтверждения");
+        logger.info("Отправка запроса с некорректным recaptcha");
+
         loginService.doRequest("+375293438185", "ghhfjd");
 
         int status = loginService.getStatusCode();
@@ -104,12 +106,10 @@ public class LoginServiceTest {
 
         logger.info("Ответ API: {}", body);
 
-        assertTrue(status == 400 || status == 422 || status == 401,
-                "Ожидался статус ошибки при некорректном коде");
-        assertTrue(body.contains("Неверный код")
-                        || body.contains("invalid")
-                        || body.contains("error"),
-                "Ответ должен содержать сообщение об ошибке неверного кода");
+        assertEquals(200, status, "API должно вернуть 200 даже при некорректном recaptcha, инициируя SMS-вход");
+
+        assertTrue(body.contains("verification_needed") && body.contains("verification_id"),
+                "Ожидалось, что API вернет verification_needed и verification_id");
     }
 
     @AfterEach
