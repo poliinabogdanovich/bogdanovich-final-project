@@ -8,7 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -17,8 +18,8 @@ public class CartServiceTest {
     private static final Logger logger = LogManager.getLogger(CartServiceTest.class);
     private CartService cartService;
     private String baseUrl = "https://dominos.by/api/v1/cart/";
-    private static String cartId; // может использоваться для отслеживания корзины
-    private static String productId = "102"; // тестовый ID продукта (пример)
+    private static String cartId;
+    private static String productId = "102";
 
     @BeforeEach
     public void setUp() {
@@ -128,14 +129,12 @@ public class CartServiceTest {
     public void testCheckOrderPrice() {
         logger.info("Отправка запроса на проверку стоимости заказа");
 
-        // Сначала добавим товар
         given()
                 .header("Content-Type", "application/json")
                 .body("{\"product_id\": \"" + productId + "\", \"quantity\": 2}")
                 .when()
                 .post(baseUrl + "add/");
 
-        // Затем получим корзину
         Response response = given()
                 .header("Content-Type", "application/json")
                 .when()
